@@ -1,0 +1,10 @@
+<h1>game! <small><%= if @player.name == @game.active_player, do: "It's your turn!" %></small></h1>
+<h2>revealed: <%= @game.revealed %></h2>
+<div>
+  <h2>my rack <%= @player.name %></h2>
+  <ol>
+    <%= for card <- @player.rack do %>
+      <li><%= card %></li>
+    <% end %>
+  </ol>
+</div>

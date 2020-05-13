@@ -1,0 +1,24 @@
+<h1>hello!</h1>
+<table>
+  <%= for {name, %{metas: [%{ready: ready} | _]}} <- @online_players do %>
+  <tr>
+    <td><%= name %></td>
+    <td>
+      <%= if name == @player do %>
+        <button phx-click="ready">
+          <%= if !ready, do: "I'm Ready!", else: "I'm Not Ready" %>
+        </button>
+      <% else %>
+        <%= if ready, do: "Ready!", else: "Not Ready" %>
+      <% end %>
+    </td>
+  </tr>
+  <% end %>
+</table>
+
+<button phx-click="start" <%= if !all_ready?(@online_players), do: "disabled" %>>
+  Start game
+</button>
+
+<%= inspect @online_players %>
+<%= @table_name %>

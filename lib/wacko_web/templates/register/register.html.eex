@@ -1,0 +1,5 @@
+<%= f = form_for @conn, Routes.register_path(@conn, :submit), [as: :player] %>
+  <%= text_input f, :name, placeholder: "Name", autofocus: true, required: true %>
+  <%= hidden_input f, :color, value: "red" %>
+  <%= submit "Submit!" %>
+</form>

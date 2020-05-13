@@ -1,0 +1,127 @@
+defmodule Wacko.NameGenerator do
+  def generate do
+    [
+      Enum.random(adjectives()),
+      Enum.random(nouns()),
+      :rand.uniform(999)
+    ]
+    |> Enum.join("-")
+  end
+
+  defp nouns do
+    ~w(
+    catan ticket-to-ride pandemic chess dominion carcassonne small-world stratego agricola dixit love-letter forbidden-island
+    stone-age splendor qwirkle hanabi codenames mouse-trap dark-tower heroscape werewolf dnd king-oil cattle-drive masterpiece
+    lost-cities cant-stop kingsburg robinson-crusoe tzolkin bopit mage-wars alhambra bohnanza boss-monster citadels dice-town
+    kingsburg munchkin quiddler sagrada scoville terra-mystica wingspan cribbage euchre
+    )
+  end
+
+  defp adjectives do
+    ~w(
+    addicting
+    afraid
+    agreeable
+    amused
+    ancient
+    angry
+    annoyed
+    anxious
+    arrogant
+    ashamed
+    average
+    awful
+    bad
+    beautiful
+    better
+    big
+    bitter
+    black
+    blue
+    boiling
+    brave
+    breezy
+    brief
+    bright
+    broad
+    broken
+    bumpy
+    calm
+    careful
+    charming
+    cheerful
+    chilly
+    clumsy
+    cold
+    colossal
+    combative
+    comfortable
+    confused
+    cooing
+    cool
+    cooperative
+    courageous
+    crazy
+    creepy
+    cruel
+    cuddly
+    curly
+    curved
+    damp
+    dangerous
+    deafening
+    deep
+    defeated
+    defiant
+    delicious
+    delightful
+    depressed
+    determined
+    dirty
+    disgusted
+    disturbed
+    dizzy
+    dry
+    dull
+    dusty
+    eager
+    early
+    elated
+    embarrassed
+    empty
+    encouraging
+    energetic
+    enthusiastic
+    envious
+    evil
+    excited
+    exuberant
+    faint
+    fair
+    faithful
+    fantastic
+    fast
+    fat
+    few
+    fierce
+    filthy
+    fine
+    flaky
+    flat
+    fluffy
+    foolish
+    forlorn
+    frail
+    frantic
+    fresh
+    friendly
+    frightened
+    funny
+    fuzzy
+    gentle
+    giant
+    gigantic
+    good
+    )
+  end
+end
