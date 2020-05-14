@@ -1,10 +1,26 @@
-<h1>game! <small><%= if @player.name == @game.active_player, do: "It's your turn!" %></small></h1>
+<h1>game! <small><%= if my_turn?(@player, @game), do: "It's your turn!" %></small></h1>
 <h2>revealed: <%= @game.revealed %></h2>
 <div>
   <h2>my rack <%= @player.name %></h2>
-  <ol>
-    <%= for card <- @player.rack do %>
-      <li><%= card %></li>
+  <h3>Hand: <%= get_player(@game, @player).hand %></h3>
+  <ul>
+    <%= for {card, idx} <- Enum.with_index(get_rack(@game, @player)) do %>
+      <li>
+        <strong><%= (idx + 1) * 10 / 2 |> trunc %></strong>
+        <%= if !hand_empty?(@game, @player) do %>
+          <button type="button" phx-click="insert" phx-value-index="<%= idx %>"><%= get_player(@game, @player).hand %> 👉🏻</button>
+        <% end %>
+
+        <%= card %>
+      </li>
     <% end %>
-  </ol>
+  </ul>
+  <%= if my_turn?(@player, @game) do %>
+    <%= if hand_empty?(@game, @player) do %>
+    <button type="button" phx-click="draw_from_deck">Draw from deck</button>
+    <button type="button" phx-click="draw_revealed">Draw revealed <%= @game.revealed %></button>
+    <% end %>
+  <% end %>
+  <%= inspect @game %>
+  <%= inspect @player %>
 </div>

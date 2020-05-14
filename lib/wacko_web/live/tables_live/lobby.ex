@@ -1,7 +1,8 @@
 defmodule WackoWeb.TablesLive.Lobby do
   use Phoenix.LiveView
+
   alias WackoWeb.Presence
-  alias Phoenix.Socket.Broadcast
+  alias Phoenix.{Socket.Broadcast, PubSub}
 
   alias Racko.{GameServer, Player, Game}
   alias WackoWeb.Router.Helpers, as: Routes
@@ -12,7 +13,7 @@ defmodule WackoWeb.TablesLive.Lobby do
         %{"current_player" => %Player{name: name}},
         socket
       ) do
-    Phoenix.PubSub.subscribe(Wacko.PubSub, "table:#{table_name}")
+    PubSub.subscribe(Wacko.PubSub, "table:#{table_name}")
     Presence.track(self(), "table:#{table_name}", name, %{ready: false})
 
     {:ok,
@@ -30,6 +31,14 @@ defmodule WackoWeb.TablesLive.Lobby do
   end
 
   @impl true
+  def handle_info(:start_game, socket) do
+    {:noreply,
+     push_redirect(socket,
+       to: Routes.live_path(socket, WackoWeb.TablesLive.Game, get_table(socket))
+     )}
+  end
+
+  @impl true
   def handle_event("ready", _value, %{assigns: %{player: player}} = socket) do
     %{metas: [%{ready: ready} | _]} = Presence.get_by_key("table:#{get_table(socket)}", player)
 
@@ -42,7 +51,8 @@ defmodule WackoWeb.TablesLive.Lobby do
 
   def handle_event("start", _value, socket) do
     GameServer.start_game(get_table(socket))
-    IO.inspect(GameServer.get_game(get_table(socket)))
+
+    PubSub.broadcast_from!(Wacko.PubSub, self(), "table:#{get_table(socket)}", :start_game)
 
     {:noreply,
      push_redirect(socket,
