@@ -1,26 +1,38 @@
-<h1>game! <small><%= if my_turn?(@player, @game), do: "It's your turn!" %></small></h1>
-<h2>revealed: <%= @game.revealed %></h2>
+<h1>game! <small><%= if my_turn?(@game, @player_name), do: "It's your turn!" %></small></h1>
+
+<%= if winner?(@game) do %>
+  <%= if winner?(@game) == @player_name do %>
+    <h1><strong>YOU WIN!</strong></h1>
+  <% else %>
+    <h1><strong><%= winner?(@game) %> wins!</strong></h1>
+  <% end %>
+<% end %>
+
+<h2>revealed: <%= get_revealed(@game) %></h2>
 <div>
-  <h2>my rack <%= @player.name %></h2>
-  <h3>Hand: <%= get_player(@game, @player).hand %></h3>
+  <h2>my rack <%= @player_name %></h2>
+  <h3>Hand: <%= get_player(@game, @player_name).hand %></h3>
   <ul>
-    <%= for {card, idx} <- Enum.with_index(get_rack(@game, @player)) do %>
+    <%= for {card, idx} <- Enum.with_index(get_rack(@game, @player_name)) do %>
       <li>
         <strong><%= (idx + 1) * 10 / 2 |> trunc %></strong>
-        <%= if !hand_empty?(@game, @player) do %>
-          <button type="button" phx-click="insert" phx-value-index="<%= idx %>"><%= get_player(@game, @player).hand %> 👉🏻</button>
+        <%= if !hand_empty?(@game, @player_name) do %>
+          <button type="button" phx-click="insert" phx-value-index="<%= idx %>"><%= get_player(@game, @player_name).hand %> 👉🏻</button>
         <% end %>
 
         <%= card %>
       </li>
     <% end %>
   </ul>
-  <%= if my_turn?(@player, @game) do %>
-    <%= if hand_empty?(@game, @player) do %>
+
+  <%= if !winner?(@game) && my_turn?(@game, @player_name) do %>
+    <%= if hand_empty?(@game, @player_name) do %>
     <button type="button" phx-click="draw_from_deck">Draw from deck</button>
-    <button type="button" phx-click="draw_revealed">Draw revealed <%= @game.revealed %></button>
+    <button type="button" phx-click="draw_revealed">Draw revealed <%= get_revealed(@game) %></button>
     <% end %>
   <% end %>
-  <%= inspect @game %>
-  <%= inspect @player %>
+
+  <%= if winner?(@game) == @player_name do %>
+    <button type="button" phx-click="wacko">WACKO!</button>
+  <% end %>
 </div>
