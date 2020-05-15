@@ -13,7 +13,8 @@ defmodule WackoWeb.TablesLive.Game do
      |> assign(
        player_name: player.name,
        game: GameServer.get_game(game_name),
-       game_name: game_name
+       game_name: game_name,
+       allow_discard?: false
      )}
   end
 
@@ -26,12 +27,24 @@ defmodule WackoWeb.TablesLive.Game do
   @impl true
   def handle_event("draw_from_deck", _value, socket) do
     game = GameServer.draw_from_deck(game_name(socket), get_player(socket))
-    {:noreply, assign(socket, :game, game)}
+    {:noreply, assign(socket, game: game, allow_discard?: true)}
   end
 
+  @impl true
   def handle_event("draw_revealed", _value, socket) do
     game = GameServer.draw_revealed_card(game_name(socket), get_player(socket))
     {:noreply, assign(socket, :game, game)}
+  end
+
+  @impl true
+  def handle_event("discard", _value, socket) do
+    game = GameServer.discard_hand(game_name(socket), get_player(socket))
+
+    game = GameServer.end_turn(game_name(socket))
+
+    broadcast_update(socket, {:game_update, game})
+
+    {:noreply, assign(socket, game: game, allow_discard?: false)}
   end
 
   @impl true

@@ -20,6 +20,14 @@ defmodule WackoWeb.TablesView do
   def get_rack(game, name) do
     get_player(game, name)
     |> Map.get(:rack)
+    |> Enum.with_index()
+    |> Enum.reverse()
+  end
+
+  def get_hand(game, name) do
+    game
+    |> get_player(name)
+    |> Map.get(:hand)
   end
 
   def get_player(%Game{players: players}, name) do
