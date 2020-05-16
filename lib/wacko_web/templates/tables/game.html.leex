@@ -1,44 +1,67 @@
-<h1>game! <small><%= if my_turn?(@game, @player_name), do: "It's your turn!" %></small></h1>
+<div class="container v-center h-center">
+  <div class="banner <%= if my_turn?(@game, @player_name), do: "primary" %>">
+    <%= if my_turn?(@game, @player_name), do: "It's your turn!", else: "It's #{get_turn(@game)}'s turn!" %>
+  </div>
+</div>
 
 <%= if winner?(@game) do %>
   <%= if winner?(@game) == @player_name do %>
-    <h1><strong>YOU WIN!</strong></h1>
+    <div class="banner banner-primary">YOU WIN!</div>
   <% else %>
-    <h1><strong><%= winner?(@game) %> wins!</strong></h1>
+    <div class="banner"><%= winner?(@game) %> wins!</div>
   <% end %>
 <% end %>
 
-<h2>revealed: <%= get_revealed(@game) %></h2>
-<div>
-  <h2>my rack <%= @player_name %></h2>
-  <h3>Hand: <%= get_hand(@game, @player_name) %></h3>
-  <ul>
-    <%= for {card, idx} <- get_rack(@game, @player_name) do %>
-      <li>
-        <strong><%= (idx + 1) * 10 / 2 |> trunc %></strong>
-        <%= if !hand_empty?(@game, @player_name) do %>
-          <button type="button" phx-click="insert" phx-value-index="<%= idx %>"><%= get_hand(@game, @player_name) %> 👉🏻</button>
-        <% end %>
+<div id="game-container">
+  <section class="pure-g">
+    <div class="pure-u-1 pure-u-lg-1-2 rack-container">
+      <div id="rack">
+        <!-- <div class="face-left"></div> -->
+        <div class="face-top">
+          <%= for {{card, scale}, idx} <- get_rack(@game, @player_name) do %>
+            <div class="row">
+              <div class="scale">
+                <%= scale %>
+              </div>
+              <div class="card-slot">
+                <div class="rack-card" style="z-index: <%= -idx %>" phx-click="insert" phx-value-index="<%= idx %>">
+                  <%= card %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        <!-- <div class="face-front"></div> -->
+      </div>
+    </div>
 
-        <%= card %>
-      </li>
+    <div class="pure-u-1 pure-u-lg-1-2 actions-container">
+      <%= if hand_empty?(@game, @player_name) do %>
+      <div class="card <%= if my_turn?(@game, @player_name), do: "actionable" %>" role="button">
+        <div class="card-helper top">Draw this card</div>
+        <div class="card-content" phx-click="draw_revealed">
+          <%= get_revealed(@game) %>
+        </div>
+      </div>
+
+      <div class="card card-deck <%= if my_turn?(@game, @player_name), do: "actionable" %>">
+        <div class="card-helper bottom">Draw from deck</div>
+        <div class="card-content" phx-click="draw_from_deck">Wacko</div>
+      </div>
+    </div>
+    <% else %>
+    <div class="card">
+      <div class="card-content">
+        <%= get_hand(@game, @player_name) %>
+      </div>
+    </div>
+      <%= if @allow_discard? do %>
+       <button type="button" id="discard" class="pure-button" phx-click="discard">Discard <%= get_hand(@game, @player_name) %></button>
+      <% end %>
     <% end %>
-  </ul>
 
-  <%= if !winner?(@game) && my_turn?(@game, @player_name) do %>
-    <%= if hand_empty?(@game, @player_name) do %>
-    <button type="button" phx-click="draw_from_deck">Draw from deck</button>
-    <button type="button" phx-click="draw_revealed">Draw revealed <%= get_revealed(@game) %></button>
+    <%= if winner?(@game) == @player_name do %>
+      <button id="wacko" type="button" class="pure-button button-success" phx-click="wacko">WACKO!</button>
     <% end %>
-
-    <%= if @allow_discard? do %>
-      <button type="button" phx-click="discard">Discard <%= get_hand(@game, @player_name) %></button>
-    <% end %>
-  <% end %>
-
-  <%= if winner?(@game) == @player_name do %>
-    <button type="button" phx-click="wacko">WACKO!</button>
-  <% end %>
+  </section>
 </div>
-<%= inspect @allow_discard? %>
-<%= inspect @game %>
