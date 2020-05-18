@@ -15,6 +15,7 @@ defmodule WackoWeb.Router do
   end
 
   pipeline :game do
+    plug(:validate_game)
     plug(:require_player)
   end
 
@@ -65,6 +66,21 @@ defmodule WackoWeb.Router do
       |> redirect(to: WackoWeb.Router.Helpers.register_path(conn, :register))
       |> halt()
     end
+  end
+
+  defp validate_game(%{path_params: %{"table_name" => table_name}} = conn, _opts) do
+    if Racko.GameServer.valid_game?(table_name) do
+      conn
+    else
+      conn
+      |> put_flash(:error, "No game exists called #{table_name}.")
+      |> redirect(to: "/")
+      |> halt()
+    end
+  end
+
+  defp validate_game(conn, _opts) do
+    conn
   end
 
   defp put_return_to(%{request_path: request_path} = conn) do
