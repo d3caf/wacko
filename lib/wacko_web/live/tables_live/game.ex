@@ -1,5 +1,5 @@
 defmodule WackoWeb.TablesLive.Game do
-  use Phoenix.LiveView
+  use Phoenix.LiveView, layout: {WackoWeb.LayoutView, "game.html"}
 
   alias Phoenix.PubSub
   alias Racko.{Player, GameServer, Game}
@@ -22,8 +22,6 @@ defmodule WackoWeb.TablesLive.Game do
   def render(assigns), do: WackoWeb.TablesView.render("game.html", assigns)
 
   # --- Events
-  #  @impl true
-
   @impl true
   def handle_event("draw_from_deck", _value, socket) do
     game = GameServer.draw_from_deck(game_name(socket), get_player(socket))
@@ -39,7 +37,6 @@ defmodule WackoWeb.TablesLive.Game do
   @impl true
   def handle_event("discard", _value, socket) do
     game = GameServer.discard_hand(game_name(socket), get_player(socket))
-
     game = GameServer.end_turn(game_name(socket))
 
     broadcast_update(socket, {:game_update, game})
@@ -59,7 +56,7 @@ defmodule WackoWeb.TablesLive.Game do
       game = GameServer.end_turn(game_name(socket))
 
       broadcast_update(socket, {:game_update, game})
-      {:noreply, assign(socket, :game, game)}
+      {:noreply, assign(socket, game: game, allow_discard?: false)}
     end
   end
 
