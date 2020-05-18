@@ -1,0 +1,19 @@
+  <header class="game-header">
+      <img class="brand" src="/images/wacko.svg" alt="Wacko!"/>
+
+    <div class="flash-container">
+      <%= if @game.active_player === @player_name do %>
+        <div class="flash flash-important" role="alert">It's your turn!</div>
+      <% else %>
+        <div class="flash flash-normal" role="alert">It's <%= @game.active_player %>'s turn</div>
+      <% end %>
+    </div>
+  </header>
+
+<main role="main" class="container">
+  <p class="alert alert-danger" role="alert"
+    phx-click="lv:clear-flash"
+    phx-value-key="error"><%= live_flash(@flash, :error) %></p>
+
+  <%= @inner_content %>
+</main>

@@ -1,8 +1,15 @@
 /* This file is for your main application css. */
-//@import "./phoenix.css";
-@import "../node_modules/purecss/build/pure.css";
-@import "../node_modules/purecss/build/grids-responsive.css";
+@import "../node_modules/sanitize.css/sanitize.css";
+@import "../node_modules/reflex-grid/scss/reflex";
 @import "../node_modules/nprogress/nprogress.css";
+
+$purple: #702882;
+$green: #269339;
+$blue: #0089DE;
+
+[class*="col-"] {
+  display: flex;
+}
 
 @font-face {
   font-family: 'Buffon';
@@ -28,9 +35,11 @@ html, button, input, select, textarea,
   font-family: sans-serif;
 }
 
-$purple: #702882;
-$green: #269339;
-$blue: #0089DE;
+button {
+  box-shadow: none;
+  border: 0;
+  outline: none;
+}
 
 body {
   background-attachment: fixed;
@@ -66,6 +75,37 @@ header {
     display: inline-block;
     height: 100%;
     width: auto;
+  }
+}
+
+header.game-header {
+  align-items: center;
+  background: none;
+  box-shadow: none;
+  .brand {
+    flex: 0 0 auto;
+  }
+  .flash-container {
+    flex: 1 1 auto;
+    margin-left: 1em;
+  }
+
+  .flash {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5em;
+    border-radius: 100px;
+    &.flash-important{
+      background: $green;
+    }
+    &.flash-normal {
+      background: rgba(white, 0.5);
+      color: $purple;
+    }
   }
 }
 
@@ -114,10 +154,18 @@ main {
 }
 
 div#game-container {
-  margin-top: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 div.actions-container {
+  flex-direction: column;
+  button#discard {
+    margin-top: 1rem;
+    width: 175px;
+  }
   .card {
     height: 175px;
     width: 300px;
@@ -194,46 +242,16 @@ div.rack-container, div.actions-container {
   align-items: center;
 }
 
-div.actions-container {
-  flex-direction: column;
-  button#discard {
-    margin-top: 1rem;
-    width: 175px;
-  }
-}
-
 div#rack {
   display: flex;
   flex-direction: column;
   width: 400px;
   background: $blue;
-  margin: 2rem 0;
   padding-left: .5rem;
   border-radius: 4px;
   transform-style: preserve-3d;
   transform: perspective(200px);
-  .face-left {
-    position: absolute;
-    background: linear-gradient(to left, darken($blue, 5), darken($blue, 10));
-    border-right: 1px solid darken($blue, 10);
-    top: 10px;
-    right: 100%;
-    height: calc(100% );
-    width: 10px;
-    z-index: 1;
-    transform: skewY(105deg);
-  }
-  .face-front {
-    position: absolute;
-    border-top: 1px solid darken($blue, 10);
-    background: linear-gradient(to bottom, darken($blue, 2), darken($blue, 15));
-    top: 100%;
-    left: 0px;
-    height: 30px;
-    width: calc(100%);
-    z-index: 2;
-    transform: skewX(-5deg);
-  }
+  box-shadow: 2px -2px 4px rgba(black, 0.5);
   .row {
     display: flex;
     padding: 1rem 0;
@@ -266,7 +284,6 @@ div#rack {
         bottom: 0;
         left: 0;
         transform: scaleY(.85) skewX(-2deg);
-        //transform: scaleY(.85);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -274,7 +291,7 @@ div#rack {
         transition: bottom 0.25s cubic-bezier(0.22, 1, 0.36, 1);
         font-family: Buffon, sans-serif;
         font-weight: bold;
-        &:hover {
+        &.actionable:hover {
           bottom: 10px;
           transition: bottom 0.5s cubic-bezier(0.22, 1, 0.36, 1);
           cursor: pointer;
@@ -325,6 +342,12 @@ button#wacko {
   .spinner-icon {
     border-top-color: $purple;
     border-left-color: $purple;
+  }
+}
+
+@media screen and (max-width: $reflex-sm) {
+  header {
+    height: 30px;
   }
 }
 
@@ -415,4 +438,55 @@ button#wacko {
 }
 .alert:empty {
   display: none;
+}
+
+@media screen and (max-width: $reflex-md) {
+  header {
+    height: 40px;
+  }
+
+  header.game-header {
+    .flash {
+      font-size: 1em;
+    }
+  }
+
+  #rack {
+    min-width: 230px;
+    max-width: 60vw;
+    div.row {
+      padding: .25rem;
+      .card-slot {
+        .rack-card {
+          height: 50px;
+          font-size: 1.5em;
+        }
+      }
+    }
+  }
+
+  div.actions-container {
+    flex-direction: row;
+    .card {
+      height: 100px;
+      width: unset;
+      flex: 1 1 0;
+      &.card-deck {
+        margin-top: 0;
+        margin-left: 1rem;
+        font-size: .75em;
+      }
+      .card-helper {
+        display: none;
+      }
+      .card-content {
+        font-size: 1.5em;
+      }
+    }
+  }
+}
+
+button.wacko-btn {
+  box-shadow: none;
+  outline: none;
 }

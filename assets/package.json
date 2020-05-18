@@ -11,7 +11,8 @@
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "phoenix_live_view": "file:../deps/phoenix_live_view",
-    "purecss": "^2.0.3"
+    "reflex-grid": "^2.0.4",
+    "sanitize.css": "^11.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
