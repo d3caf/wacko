@@ -14,6 +14,14 @@ defmodule WackoWeb.TablesView do
     if name == active_player, do: true, else: false
   end
 
+  def can_insert?(%Game{} = game, name) do
+    my_turn?(game, name) && !is_nil(get_hand(game, name))
+  end
+
+  def action_class(game, player_name) do
+    if my_turn?(game, player_name), do: "actionable"
+  end
+
   def winner?(%Game{winner: %Player{name: name}}), do: name
   def winner?(%Game{winner: nil}), do: false
 

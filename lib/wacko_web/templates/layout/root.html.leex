@@ -10,9 +10,6 @@
     <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
-    <header>
-      <img class="brand" src="<%= Routes.static_path(@conn, "/images/wacko.svg") %>" alt="Wacko!"/>
-    </header>
     <main>
       <%= @inner_content %>
     </main>
