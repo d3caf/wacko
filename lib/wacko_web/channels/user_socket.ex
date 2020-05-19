@@ -3,6 +3,7 @@ defmodule WackoWeb.UserSocket do
 
   ## Channels
   # channel "room:*", WackoWeb.RoomChannel
+  #  channel "table:*", WackoWeb.TableChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
