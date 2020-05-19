@@ -18,7 +18,7 @@ defmodule WackoWeb.TablesLive.Lobby do
 
     {:ok,
      socket
-     |> assign(table_name: table_name, player: name)
+     |> assign(table_name: table_name, player: name, owner: GameServer.get_owner(table_name))
      |> fetch}
   end
 

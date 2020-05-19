@@ -1,24 +1,28 @@
-<h1>hello!</h1>
-<table>
-  <%= for {name, %{metas: [%{ready: ready} | _]}} <- @online_players do %>
-  <tr>
-    <td><%= name %></td>
-    <td>
-      <%= if name == @player do %>
-        <button phx-click="ready">
-          <%= if !ready, do: "I'm Ready!", else: "I'm Not Ready" %>
-        </button>
-      <% else %>
-        <%= if ready, do: "Ready!", else: "Not Ready" %>
-      <% end %>
-    </td>
-  </tr>
-  <% end %>
-</table>
+<div class="lobby-wrapper">
+  <h1>Welcome to <img src="<%= WackoWeb.Endpoint.static_path("/images/wacko.svg") %>" alt="Wacko!" /></h1>
 
-<button phx-click="start" <%= if !all_ready?(@online_players), do: "disabled" %>>
-  Start game
-</button>
+  <div class="player-list">
+    <%= for {name, %{metas: [%{ready: ready} | _]}} <- @online_players do %>
+    <div class="row">
+      <div class="name"><%= if name == @player, do: "You (#{@player})", else: name %></div>
+      <div class="status">
+        <%= if name == @player do %>
+          <button class="wacko-btn btn-primary" phx-click="ready">
+            <%= if !ready, do: "I'm Ready!", else: "I'm Not Ready" %>
+          </button>
+        <% else %>
+          <span class="status-indicator status-<%= if ready, do: "ready", else: "not-ready" %>"></span>
+        <% end %>
+      </div>
+    </div>
+    <% end %>
+    <%= if @player == @owner do %>
+    <div class="row">
+      <button phx-click="start" class="wacko-btn btn-positive btn-block" <%= if !all_ready?(@online_players), do: "disabled" %>>
+        Start game
+      </button>
+    </div>
+    <% end %>
+  </div>
 
-<%= inspect @online_players %>
-<%= @table_name %>
+</div>

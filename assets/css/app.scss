@@ -4,8 +4,9 @@
 @import "../node_modules/nprogress/nprogress.css";
 
 $purple: #702882;
-$green: #269339;
+$green: #23BE00;
 $blue: #0089DE;
+$red: #DE4F3E;
 
 [class*="col-"] {
   display: flex;
@@ -32,13 +33,62 @@ $blue: #0089DE;
 html, button, input, select, textarea,
 .pure-g [class *= "pure-u"] {
   /* Set your content font stack here: */
-  font-family: sans-serif;
+  font-family: 'Baloo 2', sans-serif;
 }
 
-button {
+button.wacko-btn {
   box-shadow: none;
-  border: 0;
   outline: none;
+  font-size: 1em;
+  padding: .25em .75em;
+  background-color: lighten(black, 70);
+  border-radius: 6px;
+  background-image: none;
+  transition: background 0.05s ease-in;
+  border: 1px solid rgba(black, 0.25);
+  position: relative;
+  color: white;
+  text-shadow: 0px 0px 1px rgba(black, 0.75);
+  &.btn-positive {
+    background-color: $green;
+  }
+  &.btn-negative {
+    background-color: $red;
+  }
+  &.btn-primary {
+    background-color: $purple;
+  }
+  &:hover, &:focus {
+    transition: background-color 0.15s ease-in;
+    cursor: pointer;
+  }
+  &:active {
+    box-shadow: inset 0 2px 2px rgba(black, 0.5);
+    transition: none;
+  }
+  &[disabled] {
+    pointer-events: none;
+    background-color: gray;
+  }
+  &.btn-block {
+    display: block;
+    width: 100%;
+  }
+}
+
+span.status-indicator {
+  border-radius: 30px;
+  height: .75em;
+  width: .75em;
+  display: inline-block;
+  background-color: gray;
+  transition: background-color 0.25s ease-in-out;
+  &.status-ready {
+    background-color: $green;
+  }
+  &.status-not-ready {
+    background-color: $red;
+  }
 }
 
 body {
@@ -150,6 +200,31 @@ main {
   &.primary {
     background: $purple;
     color: white;
+  }
+}
+
+div.lobby-wrapper {
+  display: flex;
+  flex-direction: column;
+  .player-list {
+    align-self: center;
+    margin-top: 2rem;
+    background: white;
+    padding: 1em;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(black, 0.5);
+    .row {
+      display: flex;
+      height: 3em;
+      align-items: center;
+      &:not(:last-child) {
+        border-bottom: 1px solid lightgray;
+      }
+      .name {
+        flex: 1 1 auto;
+        margin-right: 4rem;
+      }
+    }
   }
 }
 
