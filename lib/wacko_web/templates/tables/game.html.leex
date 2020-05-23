@@ -64,7 +64,7 @@
     <% end %>
 
     <%= if winner?(@game) == @player_name do %>
-      <a id="wacko" type="button" class="wacko-btn btn-danger" phx-click="wacko">WACKO!</a>
+      <button id="wacko" type="button" class="wacko-btn btn-danger" phx-click="wacko">WACKO!</button>
     <% end %>
   </section>
 </div>
