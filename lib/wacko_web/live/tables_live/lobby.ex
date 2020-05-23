@@ -10,16 +10,19 @@ defmodule WackoWeb.TablesLive.Lobby do
   @impl true
   def mount(
         %{"table_name" => table_name},
-        %{"current_player" => %Player{name: name}},
+        %{"current_player" => %Player{name: name} = player},
         socket
       ) do
+    new_socket =
+      socket
+      |> assign(table_name: table_name, player: name, owner: GameServer.get_owner(table_name))
+      |> add_player(player)
+      |> fetch
+
     PubSub.subscribe(Wacko.PubSub, "table:#{table_name}")
     Presence.track(self(), "table:#{table_name}", name, %{ready: false})
 
-    {:ok,
-     socket
-     |> assign(table_name: table_name, player: name, owner: GameServer.get_owner(table_name))
-     |> fetch}
+    {:ok, new_socket}
   end
 
   @impl true
@@ -67,5 +70,15 @@ defmodule WackoWeb.TablesLive.Lobby do
 
   defp get_table(socket) do
     socket.assigns.table_name
+  end
+
+  defp add_player(%{assigns: %{table_name: game_name}} = socket, player) do
+    case GameServer.add_player(game_name, player) do
+      {:error, :unjoinable, msg} ->
+        socket |> put_flash(:error, msg) |> redirect(to: "/")
+
+      _ ->
+        socket
+    end
   end
 end
