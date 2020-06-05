@@ -76,6 +76,22 @@ button.wacko-btn {
   }
 }
 
+div.dimmer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(black, 0.75);
+  z-index: 1000;
+  height: 100%;
+  width: 100%;
+}
+
+.text-brand {
+  font-family: Buffon, serif;
+}
+
 span.status-indicator {
   border-radius: 30px;
   height: .75em;
@@ -317,7 +333,7 @@ div.rack-container, div.actions-container {
   align-items: center;
 }
 
-div#rack {
+div.rack {
   display: flex;
   flex-direction: column;
   width: 400px;
@@ -400,6 +416,42 @@ button#wacko {
     background-color: $purple;
     transform: scale(1.2);
     transition: all .25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+div.win-alert {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 4px;
+  padding: 1rem 3rem;
+  text-align: center;
+  width: 90vw;
+  max-width: 700px;
+  .text-brand {
+    color: purple;
+    margin: .25em 0;
+  }
+  .win-info {
+    h2 {
+      margin: .25em 0;
+    }
+  }
+  div.winner-rack {
+    width: 230px;
+    display: inline-block;
+    margin-top: .5em;
+    div.row {
+      padding: .25rem;
+      .card-slot {
+        .rack-card {
+          height: 50px;
+          font-size: 1.5em;
+        }
+      }
+    }
   }
 }
 
@@ -526,7 +578,7 @@ button#wacko {
     }
   }
 
-  #rack {
+  div.rack {
     min-width: 230px;
     max-width: 60vw;
     div.row {

@@ -7,17 +7,41 @@
   <% end %>
 
 <%= if winner?(@game) do %>
-  <%= if winner?(@game) == @player_name do %>
-    <div class="banner banner-primary">YOU WIN!</div>
-  <% else %>
-    <div class="banner"><%= winner?(@game) %> wins!</div>
-  <% end %>
+<div class="dimmer">
+    <div class="win-alert">
+    <h1 class="text-brand">Wacko!</h1>
+        <div class="win-info">
+            <h2><%= if winner?(@game) == @player_name, do: "You win!", else: "#{winner?(@game)} wins!" %></h2>
+        </div>
+        <div class="win-rack">
+            <div class="rack winner-rack">
+                <div class="face-top">
+                  <%= for {{card, scale}, idx} <- get_rack(@game, winner?(@game)) do %>
+                    <div class="row">
+                      <div class="scale">
+                        <%= scale %>
+                      </div>
+                      <div class="card-slot">
+                        <div class="rack-card" style="z-index: <%= -idx %>">
+                          <%= card %>
+                        </div>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+            </div>
+        </div>
+        <%= if winner?(@game) == @player_name do %>
+          <button id="wacko" type="button" class="wacko-btn btn-danger" phx-click="wacko">WACKO!</button>
+        <% end %>
+    </div>
+</div>
 <% end %>
 
 <div id="game-container">
   <section class="grid justify-center">
     <div class="col-md-6 justify-center">
-      <div id="rack">
+      <div class="rack">
         <div class="face-top">
           <%= for {{card, scale}, idx} <- get_rack(@game, @player_name) do %>
             <div class="row">
@@ -63,8 +87,5 @@
       <% end %>
     <% end %>
 
-    <%= if winner?(@game) == @player_name do %>
-      <button id="wacko" type="button" class="wacko-btn btn-danger" phx-click="wacko">WACKO!</button>
-    <% end %>
   </section>
 </div>

@@ -46,6 +46,7 @@ defmodule Wacko.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:plug, "~> 1.8"},
 
+#      {:racko, path: "../racko"}
       {:racko, github: "andrew-anguiano/racko"}
     ]
   end
