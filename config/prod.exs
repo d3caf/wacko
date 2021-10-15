@@ -11,7 +11,10 @@ use Mix.Config
 # before starting your production server.
 config :wacko, WackoWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: Application.get_env(:wacko, :app_hostname), port: Application.get_env(:wacko, :app_port)],
+  url: [host: "#{System.get_env("FLY_APP_NAME")}.fly.dev", port: 80],
+  http: [
+    transport_options: [socket_opts: [:inet6]]
+  ],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
 # Do not print debug messages in production
@@ -55,4 +58,4 @@ config :wacko, WackoWeb.Endpoint, server: true
 
 # Finally import the config/prod.secret.exs which loads secrets
 # and configuration from environment variables.
-#import_config "prod.secret.exs"
+# import_config "prod.secret.exs"

@@ -1,51 +1,75 @@
-# ----- BUILD STAGE
-FROM elixir:alpine AS app_builder
+###
+### Fist Stage - Building the Release
+###
+FROM hexpm/elixir:1.12.1-erlang-24.0.1-alpine-3.13.3 AS build
 
-# Set env vars for build
-ENV MIX_ENV=prod \
-    TEST=1 \
-    LANG=C.UTF-8
+# install build dependencies
+RUN apk add --no-cache build-base npm git
 
-RUN apk add --update git && \
-    rm -rf /var/cache/apk/*
+# prepare build dir
+WORKDIR /app
 
-# Install hex and rebar
+# extend hex timeout
+ENV HEX_HTTP_TIMEOUT=20
+
+# install hex + rebar
 RUN mix local.hex --force && \
     mix local.rebar --force
 
-# Create build dir
-RUN mkdir /app
+# set build ENV as prod
+ENV MIX_ENV=prod
+ENV SECRET_KEY_BASE=nokey
+
+# Copy over the mix.exs and mix.lock files to load the dependencies. If those
+# files don't change, then we don't keep re-fetching and rebuilding the deps.
+COPY mix.exs mix.lock ./
+COPY config config
+
+RUN mix deps.get --only prod && \
+    mix deps.compile
+
+# install npm dependencies
+COPY assets/package.json assets/package-lock.json ./assets/
+RUN npm --prefix ./assets ci --progress=false --no-audit --loglevel=error
+
+COPY priv priv
+COPY assets assets
+
+# NOTE: If using TailwindCSS, it uses a special "purge" step and that requires
+# the code in `lib` to see what is being used. Uncomment that here before
+# running the npm deploy script if that's the case.
+# COPY lib lib
+
+# build assets
+RUN npm run --prefix ./assets deploy
+RUN mix phx.digest
+
+# copy source here if not using TailwindCSS
+COPY lib lib
+
+# compile and build release
+COPY rel rel
+RUN mix do compile, release
+
+###
+### Second Stage - Setup the Runtime Environment
+###
+
+# prepare release docker image
+FROM alpine:3.13.3 AS app
+RUN apk add --no-cache libstdc++ openssl ncurses-libs
+
 WORKDIR /app
 
-# Copy config
-COPY config ./config
-COPY lib ./lib
-COPY priv ./priv
-COPY mix.exs .
-COPY mix.lock .
+RUN chown nobody:nobody /app
 
-# Fetch deps
-RUN mix deps.get
-RUN mix deps.compile
-RUN mix phx.digest
-RUN mix release
+USER nobody:nobody
 
-# ----- APP STAGE
-FROM alpine AS app
+COPY --from=build --chown=nobody:nobody /app/_build/prod/rel/wacko ./
 
-ENV LANG=C.UTF-8
+ENV HOME=/app
+ENV MIX_ENV=prod
+ENV SECRET_KEY_BASE=nokey
+ENV PORT=4000
 
-# Install openssl
-RUN apk add --update openssl ncurses-libs && rm -rf /var/cache/apk/*
-
-# Copy build artifacts from builder
-RUN adduser -D -h /home/app app
-WORKDIR /home/app
-COPY --from=app_builder /app/_build .
-RUN chown -R app: ./prod
-USER app
-
-COPY entrypoint.sh .
-
-# Run
-ENTRYPOINT ["./entrypoint.sh"]
+CMD ["bin/wacko", "start"]
