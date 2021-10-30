@@ -12,6 +12,7 @@ use Mix.Config
 config :wacko, WackoWeb.Endpoint,
   load_from_system_env: true,
   url: [host: "#{System.get_env("FLY_APP_NAME")}.fly.dev", port: 80],
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   http: [
     transport_options: [socket_opts: [:inet6]]
   ],

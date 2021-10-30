@@ -1,4 +1,4 @@
-# fly.toml file generated for wacko on 2021-10-13T15:03:33-04:00
+# fly.toml file generated for wacko on 2021-10-29T20:13:26-04:00
 
 app = "wacko"
 
@@ -7,7 +7,6 @@ kill_timeout = 5
 processes = []
 
 [env]
-  PORT = 80
 
 [experimental]
   allowed_public_ports = []
@@ -15,7 +14,7 @@ processes = []
 
 [[services]]
   http_checks = []
-  internal_port = 8080
+  internal_port = 4000
   processes = ["app"]
   protocol = "tcp"
   script_checks = []
@@ -36,5 +35,5 @@ processes = []
   [[services.tcp_checks]]
     grace_period = "1s"
     interval = "15s"
-    restart_limit = 6
+    restart_limit = 0
     timeout = "2s"

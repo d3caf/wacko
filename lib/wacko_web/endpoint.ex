@@ -10,16 +10,16 @@ defmodule WackoWeb.Endpoint do
     signing_salt: "mtNjuq3N"
   ]
 
-  def init(_key, config) do
-    if config[:load_from_system_env] do
-      port =
-        Application.get_env(:wacko, :app_port) || raise "Expected the PORT environment variable."
+  # def init(_key, config) do
+  #   if config[:load_from_system_env] do
+  #     port =
+  #       Application.get_env(:wacko, :app_port) || raise "Expected the PORT environment variable."
 
-      {:ok, Keyword.put(config, :http, [:inet6, port: port])}
-    else
-      {:ok, config}
-    end
-  end
+  #     {:ok, Keyword.put(config, :http, [:inet6, port: port])}
+  #   else
+  #     {:ok, config}
+  #   end
+  # end
 
   socket("/socket", WackoWeb.UserSocket,
     websocket: true,
@@ -36,7 +36,7 @@ defmodule WackoWeb.Endpoint do
     at: "/",
     from: :wacko,
     gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
+    only: ~w(assets fonts images favicon.ico robots.txt)
   )
 
   # Code reloading can be explicitly enabled under the
